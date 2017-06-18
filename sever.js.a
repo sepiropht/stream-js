@@ -1,0 +1,16 @@
+var http = require('http')
+var wsock = require('websocket-stream')
+var through = require('through2')
+
+var server = http.createServer(function (req, res) {
+  res.end('not found\n')
+}).listen(5000)
+wsock.createServer({ server: server }, function (stream) {
+  stream.pipe(louder()).pipe(stream)
+})
+
+function louder () {
+  return through(function (buf, enc, next) {
+    next(null, buf.toString().toUpperCase())
+  })
+}
